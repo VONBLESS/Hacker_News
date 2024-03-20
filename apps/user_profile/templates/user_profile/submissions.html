@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    User Submissions
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="columns">
+            <div class="column is-12">
+                <h1 class="title">Articles</h1>
+            </div>
+        </div>
+        <ul>
+            <ul>
+                {% for article in articles %}
+                    <li><a href="{% url 'get_article' article.id %}">{{ article.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </ul>
+        
+    </div>
+{% endblock %}

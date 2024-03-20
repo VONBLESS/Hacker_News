@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    Detailed Post
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-12">
+            <h1 class="title">{{ article.title }}</h1>
+            <h2 class="subtitle">{{ article.flags }} Reports</h2>
+
+            <strong>By: </strong> {{ article.created_by.username }} <span title="{{article.created_at}}">({{ article.created_at|timesince }} ago)</span> <br>
+            <strong>Visit: </strong> <a href="{{ article.url }}" target="_blank">{{ article.url }}</a> <br>
+            <strong>Description: </strong> {{ article.content }}
+            <hr>
+
+        </div>
+    </div> 
+    <div class="column">
+        <div class="column is-12">
+            <hr>
+            <h2 class="subtitle">Comments <small>({{article.comments.count}})</small></h2>
+            <div class="comment-thread">
+                {% for comment in article.comments.all|dictsortreversed:"created_at" %}
+                {% if not comment.parent_comment %}
+                    {% include 'all_posts/comment_thread.html' with comment=comment %}
+                {% endif %}     
+                {% endfor %}
+            </div>
+            <hr>
+            <h2 class="subtitle">Add comment</h2>
+            {% if request.user.is_authenticated %}
+            <form method="post" action="{% url 'get_article' article.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="parent_comment_id" value="">
+                {{ form.as_p }}
+                <button type="submit" class="button is-success">Submit</button>
+            </form>
+            {% else %}
+            <p> Please log in to Comment!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    
+$(document).ready(function() {
+    $('.reply-link').click(function(e) {
+        e.preventDefault();
+        var commentId = $(this).data('comment-id');
+        $('.reply-form[data-comment-id="' + commentId + '"]').toggle();
+    });
+});
+</script>
+
+{% endblock %}

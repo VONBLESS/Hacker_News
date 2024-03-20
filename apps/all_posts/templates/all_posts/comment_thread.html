@@ -1,0 +1,29 @@
+<!-- all_posts/comment_thread.html -->
+
+<div class="comment">
+    <p>
+        <strong>{{ comment.created_by.username }}</strong> <small><span title="{{comment.created_at}}">{{comment.created_at|timesince}} ago</span></small><br>
+        {{ comment.content }}
+    </p>
+    <a href="#" class="reply-link" data-comment-id="{{ comment.id }}">Reply</a>
+    <div class="card card-body my-1 mx-5 bg-dark">
+        <form method="post" action="{% url 'get_article' article.id %}" class="reply-form" data-comment-id="{{ comment.id }}" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" name="parent_comment_id" value="{{ comment.id }}">
+            {{ form.as_p }}
+            <button type="submit" class="button is-success">Submit Reply</button>
+        </form>
+    </div>
+</div>
+
+{% if comment.comment_set.all %}
+
+    <div class="nested-comments" style="margin-left: 20px;">
+        {% for reply in comment.comment_set.all|dictsortreversed:"created_at" %}
+
+            {% include 'all_posts/comment_thread.html' with comment=reply %}
+        {% endfor %}
+    </div>
+
+{% endif %}
+ 

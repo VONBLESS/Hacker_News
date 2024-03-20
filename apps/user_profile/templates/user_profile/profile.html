@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    User Profile
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-12">
+            <h1 class="title">{{ user.username }}</h1>
+        
+            <hr>
+
+            <a href="{% url 'my_submissions' user.username %}">Submissions</a> <br>
+            <a href="{% url 'my_comments' user.username %}">Comments</a> 
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+

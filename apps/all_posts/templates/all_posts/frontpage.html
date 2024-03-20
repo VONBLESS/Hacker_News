@@ -1,0 +1,41 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    All Posts Here
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="columns">
+        <div class="column is-12">
+            <h1 class="title">Newest Fire News</h1>
+        </div>
+    </div> 
+    <div class="column">
+        <div class="column is-12">
+            <table class="table is-stripped is-fullwidth">
+                <!-- <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Content</th>
+                        <th>Comments</th>
+                </thead> -->
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{{ article.url }}" target="_blank">{{ article.title }}</a>
+                            <p>
+                                by {{ article.created_by.username }} | <span title="{{ article.created_at }}">{{ article.created_at|timesince }} ago</span> | {{ article.flags }} Reports |
+                                <a href="{% url 'get_article' article.id %}">Details</a> |
+                               
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

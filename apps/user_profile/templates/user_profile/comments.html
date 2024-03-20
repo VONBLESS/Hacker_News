@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+    User Profile
+{% endblock %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-12">
+        <h2 class="subtitle">Comments by {{ user.username }}</h2>
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    {% if comment.is_reply %}
+                        Reply on <a href="{% url 'get_article' comment.article.id %}">{{ comment.article.title }}</a>: as
+                        "{{ comment.content }}" <small> <span title="{{comment.created_at}}">({{ comment.created_at|timesince }} ago)</span></small>
+                    {% else %}
+                        Parent Comment on <a href="{% url 'get_article' comment.article.id %}">{{ comment.article.title }}</a>: as
+                        "{{ comment.content }}"<small> <span title="{{comment.created_at}}">({{ comment.created_at|timesince }} ago)</span></small>
+                    {% endif %}
+
+
+                </li>
+            {% endfor %}
+
+        </ul>
+    </div>
+</div>
+{% endblock %}
