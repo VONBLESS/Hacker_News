@@ -9,7 +9,7 @@ class Article(models.Model):
 
     flags = models.IntegerField(default=0)
 
-    content = models.TextField()
+    # content = models.TextField()
     
     created_by= models.ForeignKey(User, related_name="artiles",on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
