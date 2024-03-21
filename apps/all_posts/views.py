@@ -22,8 +22,10 @@ def frontpage(request):
             article.has_reported = False
             if Report.objects.filter(reported_by=request.user, article=article).first():
                 article.has_reported = True
-
-    return render(request, 'all_posts/frontpage.html', {'articles': articles})
+    context = {
+        'articles': articles,
+    }
+    return render(request, 'all_posts/frontpage.html', context)
 
 
 def get_comment_dict(comment):
@@ -60,7 +62,13 @@ def get_article(request, article_id):
     else:
         form = CommentForm()
         print(comments_dict)
-    return render(request, 'all_posts/details.html', {'article': article, 'form': form, 'comments_dict': comments_dict})
+
+    context = {
+        'article': article,
+        'form': form,
+        'comments_dict': comments_dict
+    }
+    return render(request, 'all_posts/details.html',context )
 
 
 @login_required
@@ -75,7 +83,10 @@ def submit(request):
             return redirect('frontpage')
     else:
         form = ArticleForm()
-    return render(request, 'all_posts/submit.html', {'form': form})
+    context = {
+        'form': form
+    }
+    return render(request, 'all_posts/submit.html', context)
 
 
 @login_required

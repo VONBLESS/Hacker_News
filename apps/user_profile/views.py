@@ -11,7 +11,11 @@ from apps.all_posts.models import Article, Comment, Report
 @login_required
 def user_profile(request, username):
     user = get_object_or_404(User, username=username)
-    return render(request, 'user_profile/profile.html', {'user': user})
+
+    context = {
+        'user': user,
+    }
+    return render(request, 'user_profile/profile.html', context)
 
 
 @login_required
