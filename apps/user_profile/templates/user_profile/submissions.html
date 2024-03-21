@@ -11,10 +11,21 @@
             </div>
         </div>
         <ul>
+
             <ul>
-                {% for article in articles %}
+                {% for article in safe_articles %}
 <!--                    <li><a href="{% url 'get_article' article.id %}">{{ article.title }}</a></li>-->
-                    <li><span title="Created at {{ article.created_at }}                       url:  {{ article.url }}"><a href="{{ article.url }}" target="_blank" style="color: black; text-decoration: none;">{{ article.title }}</a></span></li> <br>
+                    <li><span title="Created at {{ article.created_at }}                       url:  {{ article.url }}">
+                        <a href="{{ article.url }}" target="_blank" style="color: black; text-decoration: none;">{{ article.title }}</a></span></li>
+
+                {% endfor %}
+            </ul>
+            <h4>Reported comments</h4>
+            <ul>
+                {% for article in red_articles %}
+<!--                    <li><a href="{% url 'get_article' article.id %}">{{ article.title }}</a></li>-->
+                    <li style="color: red;"><span title="Created at {{ article.created_at }}                        url: {{ article.url }}">
+                        <a href="{{ article.url }}" target="_blank" style="color: red; text-decoration: none;">{{ article.title }}</a></span></li>
 
                 {% endfor %}
             </ul>
