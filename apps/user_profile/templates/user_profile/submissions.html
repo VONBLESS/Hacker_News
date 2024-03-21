@@ -13,7 +13,9 @@
         <ul>
             <ul>
                 {% for article in articles %}
-                    <li><a href="{% url 'get_article' article.id %}">{{ article.title }}</a></li>
+<!--                    <li><a href="{% url 'get_article' article.id %}">{{ article.title }}</a></li>-->
+                    <li><span title="Created at {{ article.created_at }}                       url:  {{ article.url }}"><a href="{{ article.url }}" target="_blank" style="color: black; text-decoration: none;">{{ article.title }}</a></span></li> <br>
+
                 {% endfor %}
             </ul>
         </ul>

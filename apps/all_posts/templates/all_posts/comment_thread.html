@@ -7,12 +7,16 @@
     </p>
     <a href="#" class="reply-link" data-comment-id="{{ comment.id }}">Reply</a>
     <div class="card card-body my-1 mx-5 bg-dark">
+        {% if request.user.is_authenticated %}
         <form method="post" action="{% url 'get_article' article.id %}" class="reply-form" data-comment-id="{{ comment.id }}" style="display: none;">
             {% csrf_token %}
             <input type="hidden" name="parent_comment_id" value="{{ comment.id }}">
             {{ form.as_p }}
             <button type="submit" class="button is-success">Submit Reply</button>
         </form>
+        {% else %}
+            <p> Please <a href="/login">Log in</a> to Comment!</p>
+        {% endif %}
     </div>
 </div>
 

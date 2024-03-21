@@ -7,7 +7,8 @@ class Article(models.Model):
     title = models.CharField(max_length=255)
     url = models.URLField()
 
-    flags = models.IntegerField(default=0)
+
+    number_of_report = models.IntegerField(default=0)
 
     # content = models.TextField()
     
@@ -16,6 +17,26 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+class Report(models.Model):
+    article = models.ForeignKey(Article, related_name='reports', on_delete=models.CASCADE)
+
+    reported_by = models.ForeignKey(User, related_name='reports', on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        self.article.number_of_report += 1
+        self.article.save()
+
+        super(Report, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.article.number_of_report -= 1
+        self.article.save()
+        super().delete(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.article} with {self.article.number_of_report} Reports"
+
 
 class Comment(models.Model):
 

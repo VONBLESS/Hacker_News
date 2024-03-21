@@ -14,13 +14,7 @@
     <div class="column">
         <div class="column is-12">
             <table class="table is-stripped is-fullwidth">
-                <!-- <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Content</th>
-                        <th>Comments</th>
-                </thead> -->
+
                 <tbody>
                     {% for article in articles %}
                     <tr>
@@ -28,9 +22,20 @@
                         <td>
                             <a href="{{ article.url }}" target="_blank">{{ article.title }}</a>
                             <p>
-                                by {{ article.created_by.username }} | <span title="{{ article.created_at }}">{{ article.created_at|timesince }} ago</span> | {{ article.flags }} Reports |
-                                <a href="{% url 'get_article' article.id %}">Details</a> |
-                               
+                            by {{ article.created_by.username }} | <span title="{{ article.created_at }}">{{ article.created_at|timesince }} ago</span> |
+                            <a href="{% url 'get_article' article.id %}">Details</a> |
+                                {% if user.is_authenticated %}
+                                    {% if not article.created_by == request.user %}
+                                        {% if not article.has_reported %}
+                                            <a href="{% url 'report' article.id %}">Report |</a>
+                                        {% else %}
+
+                                            <a href="{% url 'unreport' article.id %}">UnReport |</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    <a href="/login">Report</a>
+                                {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>

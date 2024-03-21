@@ -18,6 +18,9 @@ def submissions(request, username):
     user = get_object_or_404(User, username=username)
 
     articles = Article.objects.filter(created_by=user)
+    safe_articles = []
+    red_articles = []
+
 
     return render(request, 'user_profile/submissions.html', {'articles': articles, 'user': user})
 @login_required

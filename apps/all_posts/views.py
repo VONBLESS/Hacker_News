@@ -1,17 +1,48 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticleForm, CommentForm
 from django.contrib.auth.decorators import login_required
-from .models import Article, Comment
+from .models import Article, Comment, Report
+from django.db.models import Count
+from django.db import models
+
 import datetime
 
+
 # Create your views here.
+
+
 def frontpage(request):
-    articles = Article.objects.all().order_by('-created_at')[0:100]
-    return render(request,'all_posts/frontpage.html', {'articles':articles})
+
+    articles = Article.objects.exclude(
+        id__in=Report.objects.values('article').annotate(report_count=Count('article')).filter(
+            report_count__gte=2).values('article')
+    ).order_by('-created_at')[0:100]
+    if request.user.is_authenticated:
+        for article in articles:
+            article.has_reported = False
+            if Report.objects.filter(reported_by=request.user, article=article).first():
+                article.has_reported = True
+
+    return render(request, 'all_posts/frontpage.html', {'articles': articles})
+
+
+def get_comment_dict(comment):
+    return {
+        'id': comment.id,
+        'created_by': comment.created_by.id,
+        'username': comment.created_by.username,
+        'text': comment.content,
+        'pubDate': comment.created_at,
+        'child_comments': [get_comment_dict(child) for child in
+                           comment.comment_set.select_related('created_by').all().order_by('-created_at')]
+    }
 
 
 def get_article(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
+    comments = Comment.objects.select_related('created_by').filter(article=article,
+                                                                   parent_comment__isnull=True).order_by('-created_at')
+    comments_dict = [get_comment_dict(comment) for comment in comments]
     if request.method == 'POST':
         form = CommentForm(request.POST)
         #  
@@ -28,9 +59,10 @@ def get_article(request, article_id):
             return redirect('get_article', article_id=article_id)
     else:
         form = CommentForm()
-    return render(request,'all_posts/details.html',{'article': article, 'form':form})
+        print(comments_dict)
+    return render(request, 'all_posts/details.html', {'article': article, 'form': form, 'comments_dict': comments_dict})
 
-        
+
 @login_required
 def submit(request):
     if request.method == "POST":
@@ -43,6 +75,32 @@ def submit(request):
             return redirect('frontpage')
     else:
         form = ArticleForm()
-    return render(request, 'all_posts/submit.html',{'form':form})
+    return render(request, 'all_posts/submit.html', {'form': form})
 
-# @login_required
+
+@login_required
+def report(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+
+    # next_page = request.GET.get('next_page', '')
+
+    if article.created_by != request.user and not Report.objects.filter(reported_by=request.user, article=article):
+        report = Report.objects.create(article=article, reported_by=request.user)
+        return redirect('frontpage')
+    # if next_page == 'get_article':
+    #     return redirect('get_article', article=article_id)
+    else:
+        return redirect('frontpage')
+
+@login_required
+def unreport(request, article_id):
+    article = get_object_or_404(Article, pk=article_id)
+    existing_report = Report.objects.filter(reported_by=request.user, article=article).first()
+
+    if existing_report:
+        # If the user has reported the article, delete the report
+        existing_report.delete()
+        return redirect('frontpage')
+
+    # Redirect the user to the front page or any other appropriate page
+    return redirect('frontpage')

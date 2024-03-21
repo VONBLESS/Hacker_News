@@ -8,11 +8,11 @@
 <div class="container">
     <div class="columns">
         <div class="column is-12">
-            <h1 class="title">{{ article.title }}</h1>
-            <h2 class="subtitle">{{ article.flags }} Reports</h2>
+            <h1><span title="{{article.created_at}}"><a href="{{ article.url }}" target="_blank" style="color: black; text-decoration: none;">{{ article.title }}</a></span></h1> <br>
+
+<!--            <h2 class="subtitle">{{ article.flags }} Reports</h2>-->
 
             <strong>By: </strong> {{ article.created_by.username }} <span title="{{article.created_at}}">({{ article.created_at|timesince }} ago)</span> <br>
-            <strong>Visit: </strong> <a href="{{ article.url }}" target="_blank">{{ article.url }}</a> <br>
 
             <hr>
 
@@ -26,8 +26,10 @@
                 {% for comment in article.comments.all|dictsortreversed:"created_at" %}
                 {% if not comment.parent_comment %}
                     {% include 'all_posts/comment_thread.html' with comment=comment %}
-                {% endif %}     
+                {% endif %}
                 {% endfor %}
+
+
             </div>
             <hr>
             <h2 class="subtitle">Add comment</h2>
@@ -39,7 +41,7 @@
                 <button type="submit" class="button is-success">Submit</button>
             </form>
             {% else %}
-            <p> Please log in to Comment!</p>
+            <p> Please <a href="/login">Log in</a> to Comment!</p>
             {% endif %}
         </div>
     </div>
