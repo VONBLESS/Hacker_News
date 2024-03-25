@@ -3,10 +3,11 @@ from .models import Article, Comment
 
 from django.core.exceptions import ValidationError
 
+
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ('title','url',)
+        fields = ('title', 'url',)
         # fields = ('title', 'url', 'content')
         widgets = {
             'title': forms.Textarea(attrs={
@@ -20,6 +21,8 @@ class ArticleForm(forms.ModelForm):
                 'maxlength': '100',
             }),
         }
+
+
 class CommentForm(forms.ModelForm):
     # parent_comment_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
@@ -33,7 +36,3 @@ class CommentForm(forms.ModelForm):
                 'maxlength': '100',
             }),
         }
-
-
-
-    

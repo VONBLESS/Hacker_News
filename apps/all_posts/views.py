@@ -17,6 +17,7 @@ def frontpage(request):
         id__in=Report.objects.values('article').annotate(report_count=Count('article')).filter(
             report_count__gte=2).values('article')
     ).order_by('-created_at')[0:100]
+
     if request.user.is_authenticated:
         for article in articles:
             article.has_reported = False
@@ -25,6 +26,7 @@ def frontpage(request):
     context = {
         'articles': articles,
     }
+
     return render(request, 'all_posts/frontpage.html', context)
 
 

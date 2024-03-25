@@ -24,12 +24,10 @@
             <h2 class="subtitle">Comments <small>({{article.comments.count}})</small></h2>
             <div class="comment-thread">
                 {% for comment in article.comments.all|dictsortreversed:"created_at" %}
-                {% if not comment.parent_comment %}
-                    {% include 'all_posts/comment_thread.html' with comment=comment %}
-                {% endif %}
+                    {% if not comment.parent_comment %}
+                        {% include 'all_posts/comment_thread.html' with comment=comment %}
+                    {% endif %}
                 {% endfor %}
-
-
             </div>
             <hr>
             <h2 class="subtitle">Add comment</h2>

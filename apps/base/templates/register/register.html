@@ -7,8 +7,8 @@ Create an account
 {% block content %}
     <form method="POST" class="form-group">
 	{% csrf_token %}
-	{{ form }}
-	<p>Already have an accoount! Login <a href="/login">here</a></p>
+	{{ form.as_p }}
+	<p>Already have an account! Login <a href="{% url 'login' %}">here</a></p>
 	<button type="submit" class="btn btn-success">Register</button>
     </form>
 {% endblock %}

@@ -34,7 +34,7 @@
                                         {% endif %}
                                     {% endif %}
                                 {% else %}
-                                    <a href="/login">Report</a>
+                                    <a href="{% url 'login' %}?next={{ request.path }}">Report</a>
                                 {% endif %}
                     </tr>
                     {% endfor %}

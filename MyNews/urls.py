@@ -24,13 +24,14 @@ import MyNews.settings as settings
 
 urlpatterns = [
 
-
+    path('', include("django.contrib.auth.urls")),
+    # path('/login')
     path('admin/', admin.site.urls),
     path("ur/<int:article_id>",all_posts_views.unreport, name="unreport"),
     path("r/<int:article_id>", all_posts_views.report, name="report"),
     path("home/", all_posts_views.frontpage, name="home"),
     path("register/", base_views.register, name='register'),
-    path('', include("django.contrib.auth.urls")),
+    path('login/', base_views.user_login, name='login'),
     path("logout/", base_views.logout_user, name="logout"),
     path("", all_posts_views.frontpage, name="frontpage"),
     path('submit/', all_posts_views.submit, name="submit"),
