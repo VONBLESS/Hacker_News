@@ -36,6 +36,8 @@
                                 {% else %}
                                     <a href="{% url 'login' %}?next={{ request.path }}">Report</a>
                                 {% endif %}
+                            </p>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -12,7 +12,9 @@ class Article(models.Model):
 
     # content = models.TextField()
 
-    created_by = models.ForeignKey(CustomUser, related_name="articles", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        CustomUser, related_name="articles", on_delete=models.CASCADE
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -20,9 +22,13 @@ class Article(models.Model):
 
 
 class Report(models.Model):
-    article = models.ForeignKey(Article, related_name='reports', on_delete=models.CASCADE)
+    article = models.ForeignKey(
+        Article, related_name="reports", on_delete=models.CASCADE
+    )
 
-    reported_by = models.ForeignKey(CustomUser, related_name='reports', on_delete=models.CASCADE)
+    reported_by = models.ForeignKey(
+        CustomUser, related_name="reports", on_delete=models.CASCADE
+    )
 
     def save(self, *args, **kwargs):
         self.article.number_of_report += 1
@@ -40,12 +46,16 @@ class Report(models.Model):
 
 
 class Comment(models.Model):
-    article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
+    article = models.ForeignKey(
+        Article, related_name="comments", on_delete=models.CASCADE
+    )
 
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    parent_comment = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True
+    )
     content = models.TextField()
 
     class Meta:
