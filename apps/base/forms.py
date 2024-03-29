@@ -20,10 +20,6 @@ class RegisterForm(forms.Form):
         # hashed_password = make_password(password)
         CustomUser.objects.create_user(username=username, password=password)
 
-    def validate(self):
-        # Custom validation logic if needed
-        pass
-
     def clean(self):
         cleaned_data = super().clean()
         # Additional validation logic if needed

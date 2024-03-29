@@ -2,8 +2,8 @@
 
 <div class="comment">
     <p>
-        <strong>{{ comment.created_by.username }}</strong> <small><span title="{{comment.created_at}}">{{comment.created_at|timesince}} ago</span></small><br>
-        {{ comment.content }}
+        <strong>{{ comment.username }}</strong> <small><span title="{{comment.pubDate}}">{{comment.pubDate|timesince}} ago</span></small><br>
+        {{ comment.text }}
     </p>
     <a href="#" class="reply-link" data-comment-id="{{ comment.id }}">Reply</a>
     <div class="card card-body my-1 mx-5 bg-dark">
@@ -22,10 +22,10 @@
     </div>
 </div>
 
-{% if comment.comment_set.all %}
+{% if comment.child_comments %}
 
     <div class="nested-comments" style="margin-left: 20px;">
-        {% for reply in comment.comment_set.all|dictsortreversed:"created_at" %}
+        {% for reply in comment.child_comments %}
 
             {% include 'all_posts/comment_thread.html' with comment=reply %}
         {% endfor %}

@@ -12,7 +12,6 @@ import datetime
 
 
 def frontpage(request):
-
     articles = Article.objects.exclude(
         id__in=Report.objects.values("article")
         .annotate(report_count=Count("article"))
@@ -33,19 +32,26 @@ def frontpage(request):
 
 
 def get_comment_dict(comment):
-    return {
+    comment_data = {
         "id": comment.id,
         "created_by": comment.created_by.id,
         "username": comment.created_by.username,
         "text": comment.content,
-        "pubDate": comment.created_at,
-        "child_comments": [
-            get_comment_dict(child)
-            for child in comment.comment_set.select_related("created_by")
-            .all()
-            .order_by("-created_at")
-        ],
+        "pubDate": comment.created_at
     }
+
+    if comment.child_count == 0:
+        comment_data['child_comments'] = []
+    else:
+        child_comments_data = [
+            get_comment_dict(child)
+            for child in
+            comment.comment_set.select_related("created_by").annotate(child_count=Count("comment")).all().order_by(
+                "-created_at")
+        ]
+        comment_data['child_comments'] = child_comments_data
+
+    return comment_data
 
 
 def get_article(request, article_id):
@@ -53,6 +59,7 @@ def get_article(request, article_id):
     comments = (
         Comment.objects.select_related("created_by")
         .filter(article=article, parent_comment__isnull=True)
+        .annotate(child_count=Count("comment"))
         .order_by("-created_at")
     )
     comments_dict = [get_comment_dict(comment) for comment in comments]
@@ -72,7 +79,7 @@ def get_article(request, article_id):
             return redirect("get_article", article_id=article_id)
     else:
         form = CommentForm()
-        print(comments_dict)
+        # print(comments_dict)
 
     context = {"article": article, "form": form, "comments_dict": comments_dict}
     return render(request, "all_posts/details.html", context)
@@ -101,7 +108,7 @@ def report(request, article_id):
     # next_page = request.GET.get('next_page', '')
 
     if article.created_by != request.user and not Report.objects.filter(
-        reported_by=request.user, article=article
+            reported_by=request.user, article=article
     ):
         report = Report.objects.create(article=article, reported_by=request.user)
         return redirect("frontpage")
