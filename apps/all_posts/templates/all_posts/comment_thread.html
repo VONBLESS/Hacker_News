@@ -15,8 +15,8 @@
             <button type="submit" class="button is-success">Submit Reply</button>
         </form>
         {% else %}
-            <p> Please <a href="/login">Log in</a> to Comment!</p>
-<!--        <p> Please <a href="/login?next={% url 'get_article' article_id %}">Log in</a> to Comment!</p>-->
+<!--            <p> Please <a href="/login">Log in</a> to Comment!</p>-->
+                <p> Please <a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to Comment!</p>
 
         {% endif %}
     </div>

@@ -42,7 +42,7 @@ def user_login(request):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             hashed_password = make_password(password)
-            print("cHECKING", check_password(password, hashed_password))
+            # print("CHECKING", check_password(password, hashed_password))
             user = authenticate(request, username=username, password=password)
 
             if user is not None:
